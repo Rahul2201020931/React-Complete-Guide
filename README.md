@@ -195,13 +195,6 @@ This guide combines the best React learning resources:
 - 🎨 **Improving the design** or structure
 - 💡 **Suggesting new content** or topics
 
----
-
-## 📄 **License & Credits**
-
-This documentation is created for educational purposes and combines multiple excellent React resources. Please refer to the original sources for licensing information.
-
----
 
 <div align="center">
 
