@@ -286,6 +286,291 @@ const list = (
 );
 ```
 
+## Types of React Components
+
+React components come in two main types: **Functional Components** and **Class Components**. Understanding both types is crucial for React development.
+
+### 1. Functional Components (Modern Approach)
+
+Functional components are JavaScript functions that return JSX. They are the preferred way to write components in modern React.
+
+#### Basic Functional Component
+```jsx
+// Simple functional component
+const Welcome = () => {
+  return <h1>Hello, World!</h1>;
+};
+
+// Arrow function syntax (more common)
+const Welcome = () => <h1>Hello, World!</h1>;
+```
+
+#### Functional Component with Props
+```jsx
+const UserCard = ({ name, email, age }) => {
+  return (
+    <div className="user-card">
+      <h2>{name}</h2>
+      <p>Email: {email}</p>
+      <p>Age: {age}</p>
+    </div>
+  );
+};
+```
+
+#### Functional Component with State (using Hooks)
+```jsx
+import { useState } from 'react';
+
+const Counter = () => {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+};
+```
+
+### 2. Class Components (Legacy Approach)
+
+Class components are ES6 classes that extend `React.Component`. They were the primary way to write components before React Hooks.
+
+#### Basic Class Component
+```jsx
+import React, { Component } from 'react';
+
+class Welcome extends Component {
+  render() {
+    return <h1>Hello, World!</h1>;
+  }
+}
+```
+
+#### Class Component with Props
+```jsx
+class UserCard extends Component {
+  render() {
+    const { name, email, age } = this.props;
+    return (
+      <div className="user-card">
+        <h2>{name}</h2>
+        <p>Email: {email}</p>
+        <p>Age: {age}</p>
+      </div>
+    );
+  }
+}
+```
+
+#### Class Component with State
+```jsx
+class Counter extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { count: 0 };
+  }
+
+  increment = () => {
+    this.setState({ count: this.state.count + 1 });
+  };
+
+  render() {
+    return (
+      <div>
+        <p>Count: {this.state.count}</p>
+        <button onClick={this.increment}>Increment</button>
+      </div>
+    );
+  }
+}
+```
+
+### 3. Component Types Comparison
+
+| Feature | Functional Components | Class Components |
+|---------|----------------------|------------------|
+| **Syntax** | Function/Arrow function | ES6 Class |
+| **State** | useState Hook | this.state |
+| **Lifecycle** | useEffect Hook | componentDidMount, etc. |
+| **Props** | Function parameters | this.props |
+| **Performance** | Better (with React.memo) | Good |
+| **Bundle Size** | Smaller | Larger |
+| **Learning Curve** | Easier | More complex |
+| **Modern React** | ✅ Preferred | ⚠️ Legacy |
+
+### 4. When to Use Each Type
+
+#### Use Functional Components When:
+- Starting a new project
+- Writing modern React applications
+- You want simpler, cleaner code
+- You're using React Hooks
+- Performance is important
+
+#### Use Class Components When:
+- Working with legacy codebases
+- You need specific lifecycle methods not covered by Hooks
+- You're migrating from older React versions
+- Team is more familiar with class syntax
+
+### 5. Converting Between Types
+
+#### From Class to Functional
+```jsx
+// Class Component
+class UserProfile extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { isEditing: false };
+  }
+
+  toggleEdit = () => {
+    this.setState({ isEditing: !this.state.isEditing });
+  };
+
+  render() {
+    const { user } = this.props;
+    const { isEditing } = this.state;
+    
+    return (
+      <div>
+        <h2>{user.name}</h2>
+        {isEditing ? (
+          <input defaultValue={user.name} />
+        ) : (
+          <p>{user.email}</p>
+        )}
+        <button onClick={this.toggleEdit}>
+          {isEditing ? 'Save' : 'Edit'}
+        </button>
+      </div>
+    );
+  }
+}
+
+// Converted to Functional Component
+import { useState } from 'react';
+
+const UserProfile = ({ user }) => {
+  const [isEditing, setIsEditing] = useState(false);
+
+  const toggleEdit = () => {
+    setIsEditing(!isEditing);
+  };
+
+  return (
+    <div>
+      <h2>{user.name}</h2>
+      {isEditing ? (
+        <input defaultValue={user.name} />
+      ) : (
+        <p>{user.email}</p>
+      )}
+      <button onClick={toggleEdit}>
+        {isEditing ? 'Save' : 'Edit'}
+      </button>
+    </div>
+  );
+};
+```
+
+### 6. Component Composition Patterns
+
+#### Higher-Order Components (HOC)
+```jsx
+// HOC for adding loading state
+const withLoading = (WrappedComponent) => {
+  return function WithLoadingComponent({ isLoading, ...props }) {
+    if (isLoading) {
+      return <div>Loading...</div>;
+    }
+    return <WrappedComponent {...props} />;
+  };
+};
+
+// Usage
+const UserListWithLoading = withLoading(UserList);
+```
+
+#### Render Props Pattern
+```jsx
+const DataFetcher = ({ render }) => {
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchData().then(data => {
+      setData(data);
+      setLoading(false);
+    });
+  }, []);
+
+  return render({ data, loading });
+};
+
+// Usage
+<DataFetcher 
+  render={({ data, loading }) => 
+    loading ? <div>Loading...</div> : <UserList users={data} />
+  } 
+/>
+```
+
+### 7. Component Best Practices
+
+#### Naming Conventions
+```jsx
+// ✅ Good - PascalCase for components
+const UserProfile = () => <div>Profile</div>;
+const NavigationMenu = () => <nav>Menu</nav>;
+
+// ❌ Bad - camelCase or lowercase
+const userProfile = () => <div>Profile</div>;
+const navigationmenu = () => <nav>Menu</nav>;
+```
+
+#### File Organization
+```
+components/
+  UserProfile/
+    UserProfile.jsx
+    UserProfile.css
+    UserProfile.test.js
+  NavigationMenu/
+    NavigationMenu.jsx
+    NavigationMenu.css
+    NavigationMenu.test.js
+```
+
+#### Component Structure
+```jsx
+// ✅ Good - Clear structure
+const UserCard = ({ user, onEdit, onDelete }) => {
+  // 1. Hooks
+  const [isExpanded, setIsExpanded] = useState(false);
+  
+  // 2. Event handlers
+  const handleEdit = () => {
+    onEdit(user.id);
+  };
+  
+  // 3. Render
+  return (
+    <div className="user-card">
+      <h3>{user.name}</h3>
+      <p>{user.email}</p>
+      <div className="actions">
+        <button onClick={handleEdit}>Edit</button>
+        <button onClick={() => onDelete(user.id)}>Delete</button>
+      </div>
+    </div>
+  );
+};
+```
+
 ## What are Props in React?
 
 **Props** are inputs to components. They are passed from parent components to child components.
@@ -474,8 +759,12 @@ const ContactForm = ({ onSubmit }) => {
 7. **React Fiber** is the new reconciliation engine
 8. **Keys** are essential for list rendering
 9. **Index keys** can cause problems
-10. **Props** are the primary way to pass data
-11. **Config Driven UI** makes components more flexible
+10. **Functional Components** are the modern, preferred approach
+11. **Class Components** are legacy but still used in some codebases
+12. **Component types** have different syntax and capabilities
+13. **Props** are the primary way to pass data
+14. **Config Driven UI** makes components more flexible
+15. **Component composition** patterns help create reusable code
 
 ## Next Steps
 
