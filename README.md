@@ -195,12 +195,6 @@ This guide combines the best React learning resources:
 - 🎨 **Improving the design** or structure
 - 💡 **Suggesting new content** or topics
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 3ed11158526aceff88a775088c6b0788bbd876d4
-<div align="center">
-
 ## 🎉 **Ready to Become a React Rockstar?**
 
 **Your journey starts now!** Pick a chapter, grab some coffee ☕, and let's build something amazing together!
